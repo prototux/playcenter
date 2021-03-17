@@ -1,0 +1,21 @@
+version: '2'
+services:
+  # Playcenter VM using libvirtd on qemu
+  # TODO: * expose qemu/libvirtd to monitor it (port 16509)
+  #       * move virsh/management to another one-shot service
+  #       * check if network could be managed more efficiently
+  #       * check if USB passtrough is now OK enough for VR
+  #       * use supervisord or s6 for proper service management
+  playcenter:
+    build: build
+    container_name: playcenter
+    volumes:
+      # Libvirtd configuration
+      - $PWD/conf/libvirtd.conf:/etc/libvirt/libvirtd.conf:ro
+      - $PWD/conf/qemu.conf:/etc/libvirt/qemu.conf:ro
+      # Playcenter VM definition and image
+      - $PWD/vm/playcenter.xml:/etc/libvirt/qemu/playcenter.xml:ro
+      - $PWD/vm/playcenter.qcow2:/playcenter.qcow2
+      - $PWD/vm/playcenter.nvram:/playcenter.nvram
+    privileged: true
+    network_mode: host

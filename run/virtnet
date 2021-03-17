@@ -1,0 +1,10 @@
+# Network config for the VM bridge on debian
+# Put this file at /etc/network/interfaces.d/virtnet
+
+auto virtnet
+iface virtnet inet static
+    post_up nft add rule filter FORWARD oifname "virtnet" accept
+    pre_up ip link set virtnet up
+    address 192.168.10.1
+    netmastk 255.255.255.0
+    bridge_ports none
